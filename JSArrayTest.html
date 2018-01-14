@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        /// <reference path="https://code.jquery.com/jquery-2.1.4.js" />
+
+        /* ADD ITEM */
+        function test_array_barckets_add_items(iterations) {
+            var arr = [];
+            for (var i = 0; i < iterations; i++) {
+                arr[i] = (i * 256 / iterations) | 0;
+            }
+            arr = null;
+        }
+
+        function test_array_add_items(iterations) {
+            var arr = new Array();
+            for (var i = 0; i < iterations; i++) {
+                arr[i] = (i * 256 / iterations) | 0;
+            }
+            arr = null;
+        }
+
+        function test_array_add_items_fixed_size(iterations) {
+            var arr = new Array(iterations);
+            for (var i = 0; i < iterations; i++) {
+                arr[i] = (i * 256 / iterations) | 0;
+            }
+            arr = null;
+        }
+
+        function test_uint8array_add_items_size(iterations) {
+            var arr = new Uint8Array(iterations);
+            for (var i = 0; i < iterations; i++) {
+                arr[i] = (i * 256 / iterations) | 0;
+            }
+            arr = null;
+        }
+
+        function test_uint8clampedarray_add_items_size(iterations) {
+            var arr = new Uint8ClampedArray(iterations);
+            for (var i = 0; i < iterations; i++) {
+                arr[i] = (i * 256 / iterations) | 0;
+            }
+            arr = null;
+        }
+
+        /* ADD ARRAY */
+        function test_array_brackets_concat(iterations) {
+            var arr = [];
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                arr.concat(arrAddMe);
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_array_concat(iterations) {
+            var arr = new Array();
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                arr.concat(arrAddMe);
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_array_concat_fix_size(iterations) {
+            var arr = new Array(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                arr.concat(arrAddMe);
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_uint8array_set(iterations) {
+            var arr = new Uint8Array(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                arr.set(arrAddMe, i * 10);
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_uint8clampedarray_set(iterations) {
+            var arr = new Uint8ClampedArray(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                arr.set(arrAddMe, i * 10);
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_array_add_array_loop(iterations) {
+            var arr = new Array();
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                for (var j = 0; j < arrAddMe.length; j++) {
+                    arr[i * 10 + j] = arrAddMe[j];
+                }
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_array_add_array_loop_fixed_size(iterations) {
+            var arr = new Array(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                for (var j = 0; j < arrAddMe.length; j++) {
+                    arr[i * arrAddMe.length + j] = arrAddMe[j];
+                }
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_uint8array_add_array_loop_fixed_size(iterations) {
+            var arr = new Uint8Array(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                for (var j = 0; j < arrAddMe.length; j++) {
+                    arr[i * arrAddMe.length + j] = arrAddMe[j];
+                }
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+        function test_uint8clampedarray_add_array_loop_fixed_size(iterations) {
+            var arr = new Uint8ClampedArray(iterations);
+            var arrAddMe = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            for (var i = 0; i < iterations / arrAddMe.length; i++) {
+                for (var j = 0; j < arrAddMe.length; j++) {
+                    arr[i * arrAddMe.length + j] = arrAddMe[j];
+                }
+            }
+            arr = null;
+            arrAddMe = null;
+        }
+
+
+        /* GET ARRAY */
+        function test_array_slice(iterations) {
+            var arr = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+            var arr2;
+            for (var i = 0; i < iterations; i++) {
+                arr2 = arr.slice(40, 50);
+            }
+            arr = null;
+        }
+
+        function test_uint8array_slice(iterations) {
+            var arr = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            var arr2;
+            for (var i = 0; i < iterations; i++) {
+                arr2 = arr.slice(40, 50);
+            }
+            arr = null;
+        }
+
+        function test_uint8clampedarray_slice(iterations) {
+            var arr = new Uint8ClampedArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            var arr2;
+            for (var i = 0; i < iterations; i++) {
+                arr2 = arr.slice(40, 50);
+            }
+            arr = null;
+        }
+
+        function test_uint8array_subarray(iterations) {
+            var arr = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            var arr2;
+            for (var i = 0; i < iterations; i++) {
+                arr2 = arr.subarray(40, 50);
+            }
+            arr = null;
+        }
+
+        function test_uint8clampedarray_subarray(iterations) {
+            var arr = new Uint8ClampedArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            var arr2;
+            for (var i = 0; i < iterations; i++) {
+                arr2 = arr.subarray(40, 50);
+            }
+            arr = null;
+        }
+
+        function test_array_get_elements_loop(iterations) {
+            var arr = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+            var arr2 = new Array();
+            for (var i = 0; i < iterations; i++) {
+                for (var j = 40; j < 50; j++) {
+                    arr2[j] = arr[j];
+                }
+            }
+            arr = null;
+        }
+
+        function test_uint8array_get_elements_loop(iterations) {
+            var arr = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            var arr2 = new Array();
+            for (var i = 0; i < iterations; i++) {
+                for (var j = 40; j < 50; j++) {
+                    arr2[j] = arr[j];
+                }
+            }
+            arr = null;
+        }
+
+        function subArray(sourceArray, destinationArray, startPos, endPos) {
+            for (var i = startPos; i < endPos; i++) {
+                destinationArray[i - startPos] = sourceArray[i];
+            }
+        }
+
+        function test_array_get_elements_custom_subArray(iterations) {
+            var arr = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+            var arr2 = new Array();
+            for (var i = 0; i < iterations; i++) {
+                subArray(arr, arr2, 40, 50);
+            }
+            arr = null;
+        }
+
+
+        /* SET VALUE */
+        function test_set_value_in_loop(iterations) {
+            for (var i = 0; i < iterations; i++) {
+                var x = i;
+            }
+        }
+
+        function test_set_value_outside_of_loop(iterations) {
+            var x;
+            for (var i = 0; i < iterations; i++) {
+                x = i;
+            }
+        }
+
+
+        function runTests(iterations, testType) {
+            console.log('Running "' + testType + '" tests...');
+            if (testType == 'additem') {
+                testRunner(test_array_barckets_add_items, iterations);
+                testRunner(test_array_add_items, iterations);
+                testRunner(test_array_add_items_fixed_size, iterations);
+                testRunner(test_uint8array_add_items_size, iterations);
+                testRunner(test_uint8clampedarray_add_items_size, iterations);
+            }
+            else if (testType == 'addarray') {
+                testRunner(test_array_brackets_concat, iterations);
+                testRunner(test_array_concat, iterations);
+                testRunner(test_array_concat_fix_size, iterations);
+                testRunner(test_uint8array_set, iterations);
+                testRunner(test_uint8clampedarray_set, iterations);
+                testRunner(test_array_add_array_loop_fixed_size, iterations);
+                testRunner(test_uint8array_add_array_loop_fixed_size, iterations);
+                testRunner(test_uint8clampedarray_add_array_loop_fixed_size, iterations);
+            }
+            else if (testType == 'getarray') {
+                testRunner(test_array_slice, iterations);
+                testRunner(test_uint8array_slice, iterations);
+                testRunner(test_uint8clampedarray_slice, iterations);
+                testRunner(test_uint8array_subarray, iterations);
+                testRunner(test_uint8clampedarray_subarray, iterations);
+                testRunner(test_array_get_elements_loop, iterations);
+                testRunner(test_uint8array_get_elements_loop, iterations);
+                testRunner(test_array_get_elements_custom_subArray, iterations);
+            }
+            else if (testType == 'setvalue') {
+                testRunner(test_set_value_in_loop, iterations);
+                testRunner(test_set_value_outside_of_loop, iterations);
+            }
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            //testRunner(, iterations);
+            console.log('done.');
+        }
+
+        function testRunner(testName, iterations) {
+            var dtStart = new Date();
+            testName(iterations);
+            console.log('' + testName.name + '(' + iterations + '): ' + ((new Date()) - dtStart) + 'ms');
+        }
+
+        $('document').ready(function () {
+            $('#btnStartTest_additem').on('click', function () {
+                runTests(parseInt($('#txtIterations').val()), 'additem');
+            })
+            $('#btnStartTest_addarray').on('click', function () {
+                runTests(parseInt($('#txtIterations').val()), 'addarray');
+            })
+            $('#btnStartTest_getarray').on('click', function () {
+                runTests(parseInt($('#txtIterations').val()), 'getarray');
+            })
+            $('#btnStartTest_setvalue').on('click', function () {
+                runTests(parseInt($('#txtIterations').val()), 'setvalue');
+            })
+        });
+    </script>
+</head>
+<body>
+    <h1>Javascript array manipulation speed test</h1>
+    Number of iterations to do: <input type="text" name="iterations" id="txtIterations" value="" />
+    <br />
+    <input type="button" name="startTest" id="btnStartTest_additem" value="Start add item tests" />
+    <input type="button" name="startTest" id="btnStartTest_addarray" value="Start add array tests" />
+    <input type="button" name="startTest" id="btnStartTest_getarray" value="Start get array tests" />
+    <input type="button" name="startTest" id="btnStartTest_setvalue" value="Start set value tests" />
+    <br />
+    <br />
+    <i>Open the debug console!</i>
+</body>
+</html>
