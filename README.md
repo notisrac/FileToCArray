@@ -26,3 +26,5 @@ If you select an image file, it will recognise it, and show you the image conver
 
 **JSArrayTest.html**
 Tests the speed of different array manipulation techniques in javascript
+
+## See it in acton here [https://notisrac.github.io/FileToCArray/Converter.html](https://notisrac.github.io/FileToCArray/Converter.html)
