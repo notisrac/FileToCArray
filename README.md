@@ -14,7 +14,7 @@ Supported formats:
 If you select an image file, it will recognise it, and show you the image conversion settings panel.
  - Change palette:
    - 32 bit RGBA (4bytes/pixel)
-   - 24bit RGB (3bytes/pixel)>
+   - 24bit RGB (3bytes/pixel)
    - 16bit RRRRRGGGGGGBBBBB (2byte/pixel)
    - 15bit RRRRRGGGGGBBBBBA (2byte/pixel)
    - 8bit RRRGGGBB (1byte/pixel)
@@ -24,3 +24,5 @@ If you select an image file, it will recognise it, and show you the image conver
    - Keep the original aspect ratio
    - Modify the sizes freely
 
+**JSArrayTest.html**
+Tests the speed of different array manipulation techniques in javascript
