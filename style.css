@@ -1,0 +1,57 @@
+label {
+    width: 100px;
+    margin: 1px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+fieldset {
+    width: 600px;
+}
+
+#imgPreview {
+    display: inline-block;
+    max-height: 100px;
+    max-width: 100px;
+}
+
+.imageConversionOption {
+}
+
+.shortInput {
+    width: 50px;
+}
+
+/*#divResult > img {
+    padding-top: 10px;
+    max-width: 95vw;
+}
+
+#fsResult {
+    max-width: 96vw;
+    width: 100%;
+}
+
+#txtResult {
+    width: 95vw;
+    height: 500px;
+    float: left;
+    font-size: 13px;
+}*/
+
+#divResult > img {
+    padding-left: 10px;
+    max-width: 800px;
+}
+
+#fsResult {
+    max-width: 1620px;
+    /*width: 100%;*/
+}
+
+#txtResult {
+    width: 800px;
+    height: 530px;
+    float: left;
+    font-size: 13px;
+}
