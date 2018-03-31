@@ -71,26 +71,43 @@
             var colNum = 16;
             var byteArray = new Array();
             if (imgImageHolder && !forceBinary) {
+                var imageWidth = imgImageHolder.width;
+                var imageHeight = imgImageHolder.height;
+                // handle the resize of the image
+                var txtResizeX = $('#txtResizeX').val();
+                var txtResizeY = $('#txtResizeY').val();
+                if (txtResizeX && txtResizeY) {
+                    imageWidth = txtResizeX;
+                    imageHeight = txtResizeY;
+                }
+                else if (txtResizeX && !txtResizeY){
+                    imageHeight = Math.floor(imageHeight * (txtResizeX / imageWidth));
+                    imageWidth = txtResizeX;
+                }
+                else if (!txtResizeX && txtResizeY){
+                    imageWidth = Math.floor(imageWidth * (txtResizeY / imageHeight));
+                    imageHeight = txtResizeY;
+                }
                 // TODO put the prepareImage into a worker thread https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers
-                var preparedImageData = prepareImage(imgImageHolder);
+                var preparedImageData = prepareImage(imgImageHolder, imageWidth, imageHeight);
                 byteArray = preparedImageData.moddedPixels;
                 // display the converted image
                 // create the canvas for it
                 var canvas = $('<canvas />')[0];
-                canvas.width = imgImageHolder.width;
-                canvas.height = imgImageHolder.height;
+                canvas.width = imageWidth;
+                canvas.height = imageHeight;
                 // get the context from the canvas
                 var context = canvas.getContext('2d');
                 //console.log('' + imgImageHolder.width + 'x' + imgImageHolder.height);
                 // create a new imagedata and put it on the context
-                var imgData = new ImageData(preparedImageData.newPixels, imgImageHolder.width, imgImageHolder.height);
+                var imgData = new ImageData(preparedImageData.newPixels, imageWidth, imageHeight);
                 context.putImageData(imgData, 0, 0);
                 // create a new image tag
                 var newImage = new Image();
                 newImage.src = canvas.toDataURL();
                 // add it to the result div
                 $('#divResult').append(newImage);
-                colNum = imgImageHolder.width;
+                colNum = imageWidth;
             }
             else if (binBinaryFileHolder) {
                 byteArray = prepareBinary(binBinaryFileHolder);
@@ -107,28 +124,41 @@
         /**
          * Converts the image to the specified format, and returns the modified pixels in the new format along with them in 24bit format
          */
-        function prepareImage(image) {
+        function prepareImage(image, newWidth, newHeight) {
             var dtStart = new Date();
 
-            console.log('image size: ' + image.width + 'x' + image.height);
+            console.log('image size: ' + image.width + 'x' + image.height + ' => ' + newWidth + 'x' + newHeight);
             var paletteMod = $('#cbPaletteMod').val();
             var bytePerPixel = Math.ceil(parseInt(paletteMod) / 8);
             console.log('paletteMod: ' + paletteMod + ' (' + bytePerPixel + 'bytes/pixel)');
 
+            var imageWidth = newWidth;
+            var imageHeight = newHeight;
+
             // create a canvas for the image
             var canvas = $('<canvas />')[0];
-            canvas.width = image.width;
-            canvas.height = image.height;
+            canvas.width = imageWidth;
+            canvas.height = imageHeight;
             var context = canvas.getContext('2d');
+            // set smoothing for resize
+            if (newWidth != image.width) {
+                context.mozImageSmoothingEnabled = true;
+                context.imageSmoothingQuality = "medium";
+                context.webkitImageSmoothingEnabled = true;
+                context.msImageSmoothingEnabled = true;
+                context.imageSmoothingEnabled = true;                    
+            }
+           
             // load the image into the context
-            context.drawImage(image, 0, 0, image.width, image.height);
+            context.drawImage(image, 0, 0, imageWidth, imageHeight);
+
             // get the pixels
-            var origPixels = context.getImageData(0, 0, image.width, image.height).data; // Uint8ClampedArray
+            var origPixels = context.getImageData(0, 0, imageWidth, imageHeight).data; // Uint8ClampedArray
 
             //var isSingleArray = $('[type="radio"][name="cbArrayType"]:checked').val() == 'SINGLE';
 
             // do image convert
-            var convertResult = imageConverter.convert(image.width, image.height, bytePerPixel, paletteMod, origPixels);
+            var convertResult = imageConverter.convert(imageWidth, imageHeight, bytePerPixel, paletteMod, origPixels);
             var moddedPixels = convertResult.moddedPixels;
             var newPixels = convertResult.newPixels;
 
