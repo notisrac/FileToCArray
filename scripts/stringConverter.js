@@ -37,7 +37,7 @@ var stringConverter = {
             //}
             stringByte = this.convertByte(data[i], conversionType) + ', ';
             if (multiLine && ((i + 1) % colNumber == 0)) {
-                stringByte += '\r\n';
+                stringByte += '\r\n  ';
             }
 
             resultString += stringByte;
@@ -45,7 +45,7 @@ var stringConverter = {
         resultString = resultString.substr(0, resultString.lastIndexOf(',')).trim();
 
         // add the array definition
-        resultString = 'const uint8_t data[' + dataLength + '] = {\r\n' + resultString + '\r\n};';
+        resultString = '// array size is ' + dataLength + '\r\nconst uint8_t data[] = {\r\n  ' + resultString + '\r\n};';
 
         return resultString;
     }

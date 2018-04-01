@@ -83,7 +83,11 @@
         <input type="button" name="btnConvert" id="btnConvert" value="Convert" />&nbsp;&nbsp;<span id="spnStatus"></span>
     </p>
     <fieldset id="fsResult">
-        <legend>Result&nbsp;<input type="button" name="btnCopyToClipboard" id="btnCopyToClipboard" value="Copy to clipboard" />&nbsp;<input type="button" name="btnSaveImage" id="btnSaveImage" value="Save image" class="fileIsImage" /></legend>
+        <legend>Result
+            &nbsp;<input type="button" name="btnCopyToClipboard" id="btnCopyToClipboard" value="Copy to clipboard" />
+            &nbsp;<a download="download" id="aSaveFile" class="linkButtons"><input type="button" name="btnSaveFile" id="btnSaveFile" value="Save as file" class="" /></a>
+            &nbsp;<a download="download" id="aSaveImage" class="fileIsImage linkButtons"><input type="button" name="btnSaveImage" id="btnSaveImage" value="Save image" class="fileIsImage" /></a>
+        </legend>
         <textarea id="txtResult" wrap="off"></textarea>
         <div id="divResult"></div>
     </fieldset>

@@ -55,3 +55,7 @@ fieldset {
     float: left;
     font-size: 13px;
 }
+
+.linkButtons {
+    text-decoration: none;
+}

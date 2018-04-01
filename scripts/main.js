@@ -1,6 +1,7 @@
 /// <reference path="https://code.jquery.com/jquery-2.1.4.js" />
 var imgImageHolder = new Image();
 var binBinaryFileHolder;
+var uploadedFile;
 
 /**
  * Handles when a file is selected by the user.
@@ -11,6 +12,7 @@ function handleFileSelected(e) {
     //console.log(e.target.files);
     var singleFile = e.target.files[0];
     var url = URL.createObjectURL(singleFile);
+    uploadedFile = singleFile;
 
     imgImageHolder = null;
     binBinaryFileHolder = null;
@@ -66,6 +68,7 @@ function convert() {
     $('#fsResult').show();
     $('#txtResult').val('');
     var forceBinary = $('#cbForceBinary').is(':checked');
+    var stringData = '';
 
     // TODO display a loading icon
 
@@ -96,6 +99,7 @@ function convert() {
         // display the converted image
         // create the canvas for it
         var canvas = $('<canvas />')[0];
+        canvas.id = 'cnvsResultCanvas';
         canvas.width = imageWidth;
         canvas.height = imageHeight;
         // get the context from the canvas
@@ -105,18 +109,22 @@ function convert() {
         var imgData = new ImageData(preparedImageData.newPixels, imageWidth, imageHeight);
         context.putImageData(imgData, 0, 0);
         // create a new image tag
-        var newImage = new Image();
-        newImage.src = canvas.toDataURL();
+        //var newImage = new Image();
+        //newImage.src = canvas.toDataURL();
         // add it to the result div
-        $('#divResult').append(newImage);
+        //$('#divResult').append(newImage);
+        $('#divResult').append(canvas);
         colNum = imageWidth;
+        stringData += '#define IMAGE_HEIGHT ' + imageHeight + '\r\n';
+        stringData += '#define IMAGE_WIDTH ' + imageWidth + '\r\n';
+        stringData += '\r\n';
     }
     else if (binBinaryFileHolder) {
         setStatus('Preparing biary data');
         byteArray = prepareBinary(binBinaryFileHolder);
     }
     setStatus('Converting data to string');
-    var stringData = convertToString(byteArray, colNum);
+    stringData += convertToString(byteArray, colNum);
     //console.log('Result: ' + stringData);
     // display the string array
     $('#txtResult').val(stringData);
@@ -212,7 +220,22 @@ function copyToClipboard() {
 }
 
 function saveImage() {
-    // TODO do save image
+    // do save image
+    var aLink = $('#aSaveImage');
+    var imageUrl = document.getElementById('cnvsResultCanvas').toDataURL(uploadedFile.type);
+    imageUrl = imageUrl.replace(uploadedFile.type, 'image/octet-stream');
+    aLink.attr('href', imageUrl);
+    aLink.attr('download', uploadedFile.name);
+    //this.download = uploadedFile.name;
+}
+
+function saveFile() {
+    // do save image
+    var aLink = $('#aSaveFile');
+    var fileUrl = 'data:application/octet-stream;base64,' + btoa($('#txtResult').val());
+    aLink.attr('href', fileUrl);
+    aLink.attr('download', uploadedFile.name + '.c');
+    //this.download = uploadedFile.name;
 }
 
 function setStatus(message) {
@@ -246,5 +269,6 @@ $('document').ready(function () {
     $('#btnConvert').on('click', convert);
     $('#btnCopyToClipboard').on('click', copyToClipboard);
     $('#btnSaveImage').on('click', saveImage);
+    $('#btnSaveFile').on('click', saveFile);
     init();
 });
