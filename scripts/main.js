@@ -21,7 +21,7 @@ function handleFileSelected(e) {
     $('#fiName').text(singleFile.name);
     $('#fiSize').text(singleFile.size + ' byte(s)');
     $('#fiType').text(singleFile.type || (singleFile.name.substr(singleFile.name.lastIndexOf('.'))));
-    $('#fiLastModifiedDate').text(singleFile.lastModifiedDate);
+    $('#fiLastModifiedDate').text(new Date(singleFile.lastModified).toISOString());
     // show the conversion options fieldset
     $('#fsConversionOptions').show();
     $('#btnConvert').show();
