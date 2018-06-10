@@ -1,4 +1,7 @@
 /// <reference path="https://code.jquery.com/jquery-2.1.4.js" />
+/// <reference path="imageConverter.js">
+/// <reference path="arrayUtils.js">
+/// <reference path="stringConverter.js">
 var imgImageHolder = new Image();
 var binBinaryFileHolder;
 var uploadedFile;
@@ -270,5 +273,17 @@ $('document').ready(function () {
     $('#btnCopyToClipboard').on('click', copyToClipboard);
     $('#btnSaveImage').on('click', saveImage);
     $('#btnSaveFile').on('click', saveFile);
+
+    $.get('https://api.github.com/repos/notisrac/FileToCArray', function(data) {
+        var updateAt = new Date(data.updated_at);
+        console.log(updateAt);
+        $('#versionInfo').text(updateAt.toISOString());
+        $('#description').text(data.description);
+        var gitUrl = data.html_url
+        $('#gitLink').attr('href', gitUrl);
+        $('#gitLink').text(gitUrl);
+    }); 
+
+
     init();
 });

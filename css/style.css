@@ -59,3 +59,15 @@ fieldset {
 .linkButtons {
     text-decoration: none;
 }
+
+.versionInfo {
+    font-size: 10px;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.additionalInfo {
+    margin-top: -20px;
+    font-weight: normal;
+    font-size: 14px;
+}
