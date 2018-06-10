@@ -101,7 +101,8 @@ var imageConverter = {
             // store the modified pixel
             if (paletteMod == '1') { // this one is tricky: every 8 pixels make up a byte
                 var itemNo = Math.floor(i / 4 / 8);
-                moddedPixels[itemNo] = (moddedPixels[itemNo] << 1) | moddedPixelData.convertedPixel[0];
+                var currentBitPos = 7 - (i / 4) % 8;
+                moddedPixels[itemNo] = (moddedPixels[itemNo] & (~(1 << currentBitPos))) | (moddedPixelData.convertedPixel[0] << currentBitPos)
             }
             else { // the convertFromPixel returns an array
                 arrayUtils.concatArray(moddedPixelData.convertedPixel, moddedPixels, i * bytePerPixel);
