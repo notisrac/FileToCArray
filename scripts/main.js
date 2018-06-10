@@ -246,7 +246,7 @@ function saveFile() {
     var aLink = $('#aSaveFile');
     var fileUrl = 'data:application/octet-stream;base64,' + btoa($('#txtResult').val());
     aLink.attr('href', fileUrl);
-    aLink.attr('download', uploadedFile.name + '.h');
+    aLink.attr('download', uploadedFile.name.replace(/\.[^/.]+$/, '.h'));
     //this.download = uploadedFile.name;
 }
 
