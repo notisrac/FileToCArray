@@ -71,3 +71,11 @@ fieldset {
     font-weight: normal;
     font-size: 14px;
 }
+
+.signaturePreview {
+    float: right;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    padding-top: 4px;
+    color: #696969;
+}

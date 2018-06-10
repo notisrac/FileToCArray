@@ -45,7 +45,7 @@ var stringConverter = {
         resultString = resultString.substr(0, resultString.lastIndexOf(',')).trim();
 
         // add the array definition
-        resultString = '// array size is ' + dataLength + '\r\nconst uint8_t data[] = {\r\n  ' + resultString + '\r\n};';
+        // resultString = '// array size is ' + dataLength + '\r\nconst uint8_t data[] = {\r\n  ' + resultString + '\r\n};';
 
         return resultString;
     }

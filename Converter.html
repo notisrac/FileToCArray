@@ -14,7 +14,7 @@
     <h1>File to C style array converter<span class="versionInfo" >v:&nbsp;<span id="versionInfo"></span></span>
         <br/>
         <span class="additionalInfo">
-        <span id="description"></span> <a href="" id="gitLink" target="_blank"></a>
+        <span id="description">&nbsp;</span> <a href="" id="gitLink" target="_blank"></a>
         </span>
     </h1>
     <hr/>
@@ -59,6 +59,7 @@
             <label for="cbForceBinary">Treat as binary</label>
             <input type="checkbox" id="cbForceBinary" />
         </div>
+        <hr class="fileIsImage"/>
         <div class="fileIsImage">
             <label id="lblPaletteMod" for="cbPaletteMod">Palette mod</label>
             <select id="cbPaletteMod" class="imageConversionOption">
@@ -76,7 +77,7 @@
             <input type="text" id="txtResizeX" class="imageConversionOption shortInput" />&nbsp;x&nbsp;<input type="text" id="txtResizeY" class="imageConversionOption shortInput" />&nbsp;(Fill only one to maintain aspect ratio)
         </div>
         <div class="fileIsImage">
-            <label for="cbMultiLine">Multi line</label>
+            <label for="cbMultiLine" class="imageConversionOption">Multi line</label>
             <input type="checkbox" id="cbMultiLine" class="imageConversionOption" checked />
         </div>
         <!--<div class="fileIsImage">
@@ -84,6 +85,43 @@
             <input type="radio" name="cbArrayType" value="SINGLE" class="imageConversionOption" checked />Single
             <input type="radio" name="cbArrayType" value="PERPIXEL" class="imageConversionOption" />Per pixel
         </div>-->
+        <hr/>
+        <div>
+            <label for="cbStatic">static</label>
+            <input type="checkbox" id="cbStatic" value="static" checked />
+        </div>
+        <div>
+            <label for="cbConst">const</label>
+            <input type="checkbox" id="cbConst" value="const" checked />
+        </div>
+        <div>
+            <label id="lblDataType" for="selDataType">Data type</label>
+            <select id="selDataType">
+                <option value="byte">byte</option>
+                <option value="char">char</option>
+                <option value="unsigned char" selected>unsigned char</option>
+                <option value="int">int</option>
+                <option value="unsigned int">unsigned int</option>
+                <option value="word">word</option>
+                <option value="long">long</option>
+                <option value="unsigned long">unsigned long</option>
+                <option value="int8_t">int8_t</option>
+                <option value="int16_t">int16_t</option>
+                <option value="int32_t">int32_t</option>
+                <option value="int64_t">int64_t</option>
+                <option value="uint8_t">uint8_t</option>
+                <option value="uint16_t">uint16_t</option>
+                <option value="uint32_t">uint32_t</option>
+                <option value="uint64_t">uint64_t</option>
+            </select>
+        </div>
+        <div>
+            <label for="cbPROGMEM">PROGMEM</label>
+            <input type="checkbox" id="cbPROGMEM" value="PROGMEM" checked />
+        </div>
+        <div>
+            <span id="spnSignaturePreview" class="signaturePreview">...</span>
+        </div>
     </fieldset>
     <p>
         <input type="button" name="btnConvert" id="btnConvert" value="Convert" />&nbsp;&nbsp;<span id="spnStatus"></span>

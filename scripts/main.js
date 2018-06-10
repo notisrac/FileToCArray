@@ -5,17 +5,19 @@
 var imgImageHolder = new Image();
 var binBinaryFileHolder;
 var uploadedFile;
+var variableName;
 
 /**
  * Handles when a file is selected by the user.
  * Displays the file info.
  */
 function handleFileSelected(e) {
-    init();
     //console.log(e.target.files);
     var singleFile = e.target.files[0];
     var url = URL.createObjectURL(singleFile);
     uploadedFile = singleFile;
+    variableName = uploadedFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z_][^a-zA-Z0-9_]*/, '_');
+    init();
 
     imgImageHolder = null;
     binBinaryFileHolder = null;
@@ -77,7 +79,8 @@ function convert() {
 
     var colNum = 16;
     var byteArray = new Array();
-    if (imgImageHolder && !forceBinary) {
+    var isImage = imgImageHolder && !forceBinary;
+    if (isImage) {
         var imageWidth = imgImageHolder.width;
         var imageHeight = imgImageHolder.height;
         // handle the resize of the image
@@ -118,16 +121,13 @@ function convert() {
         //$('#divResult').append(newImage);
         $('#divResult').append(canvas);
         colNum = imageWidth;
-        stringData += '#define IMAGE_HEIGHT ' + imageHeight + '\r\n';
-        stringData += '#define IMAGE_WIDTH ' + imageWidth + '\r\n';
-        stringData += '\r\n';
     }
     else if (binBinaryFileHolder) {
         setStatus('Preparing biary data');
         byteArray = prepareBinary(binBinaryFileHolder);
     }
     setStatus('Converting data to string');
-    stringData += convertToString(byteArray, colNum);
+    stringData += convertToString(byteArray, colNum, isImage, imageHeight, imageWidth);
     //console.log('Result: ' + stringData);
     // display the string array
     $('#txtResult').val(stringData);
@@ -190,7 +190,7 @@ function prepareBinary(data) {
     return ia;
 }
 
-function convertToString(data, colNum) {
+function convertToString(data, colNum, isImage, imageHeight, imageWidth) {
     console.log('Converting data to string');
     var resultString = '';
     var conversionType = $('#selFormat').val();
@@ -204,7 +204,16 @@ function convertToString(data, colNum) {
     var multiLine = $('#cbMultiLine').is(':checked');
 
     // do the conversion
-    resultString = stringConverter.convert(dataLength, conversionType, multiLine, colNumber, data);
+    if (isImage) {
+        resultString += '#define ' + variableName.toUpperCase() + '_HEIGHT ' + imageHeight + '\r\n';
+        resultString += '#define ' + variableName.toUpperCase() + '_WIDTH ' + imageWidth + '\r\n';
+        resultString += '\r\n';
+    }
+
+    resultString += '// array size is ' + dataLength + '\r\n';
+    resultString += assebleSignature() + ' = {\r\n  ';
+    resultString += stringConverter.convert(dataLength, conversionType, multiLine, colNumber, data);
+    resultString += '\r\n};';
 
     return resultString;
 }
@@ -237,7 +246,7 @@ function saveFile() {
     var aLink = $('#aSaveFile');
     var fileUrl = 'data:application/octet-stream;base64,' + btoa($('#txtResult').val());
     aLink.attr('href', fileUrl);
-    aLink.attr('download', uploadedFile.name + '.c');
+    aLink.attr('download', uploadedFile.name + '.h');
     //this.download = uploadedFile.name;
 }
 
@@ -258,6 +267,27 @@ function init() {
     setStatus('');
     imgImageHolder = new Image();
     binBinaryFileHolder = null;
+    updateSignaturePreview();
+}
+
+function assebleSignature() {
+    var sig = '';
+    if ($('#cbStatic').is(':checked')) {
+        sig += $('#cbStatic').val() + ' ';
+    }
+    if ($('#cbConst').is(':checked')) {
+        sig += $('#cbConst').val() + ' ';
+    }
+    sig += $('#selDataType').val() + ' ' + variableName + '[] ';
+    if ($('#cbPROGMEM').is(':checked')) {
+        sig += $('#cbPROGMEM').val() + ' ';
+    }
+
+    return sig;
+}
+
+function updateSignaturePreview() {
+    $('#spnSignaturePreview').text(assebleSignature() + ' = { ... };');
 }
 
 $('document').ready(function () {
@@ -273,6 +303,11 @@ $('document').ready(function () {
     $('#btnCopyToClipboard').on('click', copyToClipboard);
     $('#btnSaveImage').on('click', saveImage);
     $('#btnSaveFile').on('click', saveFile);
+
+    $('#cbStatic').on('change', updateSignaturePreview);
+    $('#cbConst').on('change', updateSignaturePreview);
+    $('#selDataType').on('change', updateSignaturePreview);
+    $('#cbPROGMEM').on('change', updateSignaturePreview);
 
     $.get('https://api.github.com/repos/notisrac/FileToCArray', function(data) {
         var updateAt = new Date(data.updated_at);
