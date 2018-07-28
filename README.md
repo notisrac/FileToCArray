@@ -28,3 +28,6 @@ If you select an image file, it will recognise it, and show you the image conver
 Tests the speed of different array manipulation techniques in javascript
 
 ## See it in acton here [https://notisrac.github.io/FileToCArray/index.html](https://notisrac.github.io/FileToCArray/index.html)
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-122950438-1/FileToCArray)](https://github.com/igrigorik/ga-beacon)
