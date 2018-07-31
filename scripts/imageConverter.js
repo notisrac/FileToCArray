@@ -83,32 +83,106 @@ var imageConverter = {
         return { convertedPixel: retData, newPixel: newPixelData };
     },
 
-    convert: function (imageWidth, imageHeight, bytePerPixel, paletteMod, origPixels) {
-        // the downsampled pixels
-        var moddedPixels = new Uint8Array(imageWidth * imageHeight * bytePerPixel); // typed arrays are way faster, than the genric Array
-        // the downsampled pixels converted back to 24bit for displaying
-        var newPixels = new Uint8ClampedArray(imageWidth * imageHeight * 4);
-        // single pixel from the original set
-        var pixelData = new Uint8Array(4);
-        // loop through all the pixels, and modify them one by one
-        for (var i = 0; i < (origPixels.byteLength/*image.height * image.width * 4*/); i += 4) {
-            // the current pixel
-            arrayUtils.subArray(origPixels, pixelData, i, i + 4);
-            // modify the current pixel
-            var moddedPixelData = this.convertFromPixel(pixelData, paletteMod);
-            // store the new pixel
-            arrayUtils.concatArray(moddedPixelData.newPixel, newPixels, i);
-            // store the modified pixel
-            if (paletteMod == '1') { // this one is tricky: every 8 pixels make up a byte
-                var itemNo = Math.floor(i / 4 / 8);
-                var currentBitPos = 7 - (i / 4) % 8;
-                moddedPixels[itemNo] = (moddedPixels[itemNo] & (~(1 << currentBitPos))) | (moddedPixelData.convertedPixel[0] << currentBitPos)
-            }
-            else { // the convertFromPixel returns an array
-                arrayUtils.concatArray(moddedPixelData.convertedPixel, moddedPixels, i * bytePerPixel);
+    getBits: function (byteValue) {
+        var outBits = '';
+        for (let i = 0; i < 8; i++) {
+            var bitMask = 1 << i;
+            if ((byteValue & bitMask) != 0) {
+                outBits += '1';
+            } else {
+                outBits += '0';
             }
         }
+        //console.log(outBits);
 
+        return outBits;
+    },
+
+    getConvertedPixel: function (source, position, paletteMod) {
+        // single pixel from the original set
+        var pixelData = new Uint8Array(4);
+        // get the current pixel (4 bytes)
+        arrayUtils.subArray(source, pixelData, position, position + 4);
+        // modify the current pixel
+        var moddedPixelData = this.convertFromPixel(pixelData, paletteMod);
+        
+        return moddedPixelData;
+    },
+
+    convert: function (imageWidth, imageHeight, bytePerPixel, paletteMod, origPixels, forColumnRead) {
+        // the downsampled pixels
+        var moddedPixels = new Uint8Array(imageWidth * imageHeight * bytePerPixel); // typed arrays are way faster, than the genric Array
+        // the actual length of the modded pixels array
+        var moddedPixelsActualLength = (paletteMod == '1')? 0 : moddedPixels.length;
+        // the downsampled pixels converted back to 24bit for displaying
+        var newPixels = new Uint8ClampedArray(imageWidth * imageHeight * 4);
+        // loop through all the pixels, and modify them one by one
+        if (!forColumnRead || (forColumnRead && paletteMod != '1')) {
+            for (var i = 0; i < (origPixels.byteLength/*image.height * image.width * 4*/); i += 4) {
+                // modify the current pixel
+                var moddedPixelData = this.getConvertedPixel(origPixels, i, paletteMod);
+                // store the new pixel
+                arrayUtils.concatArray(moddedPixelData.newPixel, newPixels, i);
+                // store the modified pixel
+                if (paletteMod == '1') { // this one is tricky: every 8 pixels make up a byte
+                    var itemNo = Math.floor(i / 4 / 8);
+                    var currentBitPos = 7 - (i / 4) % 8;
+                    moddedPixels[itemNo] = (moddedPixels[itemNo] & (~(1 << currentBitPos))) | (moddedPixelData.convertedPixel[0] << currentBitPos)
+
+                    if (itemNo > moddedPixelsActualLength) {
+                        moddedPixelsActualLength = itemNo + 1;
+                    }
+                }
+                else { // the convertFromPixel returns an array
+                    arrayUtils.concatArray(moddedPixelData.convertedPixel, moddedPixels, i / 4 * bytePerPixel);
+                }
+            }
+        } else {
+            var byteCount = 0;
+            for (let x = 0; x < imageWidth; x++) {
+                var outValue = 0;
+                for (let y = 0; y < imageHeight; y++) {
+                    var pixelPos = (y * imageWidth * 4) + (x * 4);
+                    // modify the current pixel
+                    var moddedPixelData = this.getConvertedPixel(origPixels, pixelPos, paletteMod);
+                    var pixelValue = moddedPixelData.convertedPixel[0];
+                    // console.log('pixelPos:' + pixelPos + ' outValue:' + this.getBits(outValue) + ' pixelValue:' + JSON.stringify(pixelValue));
+
+                    // switch to a new byte
+                    if (0 == (y % 8) && 0 != y) {
+                        arrayUtils.concatArray([outValue], moddedPixels, byteCount);
+                        // console.log(byteCount + ': ' + this.getBits(outValue));
+                        // console.log(byteCount + ': ' + JSON.stringify(moddedPixels));
+                        byteCount++;
+                        outValue = 0;
+                    }
+
+                    // add the pixels to the byte
+                    var mask = 1 << (y % 8);
+                    if (0 < pixelValue) {
+                        outValue |= mask;
+                    }
+                    else {
+                        outValue &= ~mask;
+                    }
+                    // console.log('x:' + x + ' y:' + y + ' pixelValue:' + pixelValue + ' outValue:' + this.getBits(outValue));
+                }
+                arrayUtils.concatArray([outValue], moddedPixels, byteCount);
+                // console.log(byteCount + ': ' + this.getBits(outValue));
+                // console.log(byteCount + ': ' + JSON.stringify(moddedPixels));
+                byteCount++;
+            }
+            moddedPixelsActualLength = byteCount;
+        }
+
+        if (moddedPixels.length != moddedPixelsActualLength) {
+            console.log('array length: ' + moddedPixels.length + ' -> ' + moddedPixelsActualLength);
+            var tmp = new Uint8Array(moddedPixelsActualLength);
+            arrayUtils.subArray(moddedPixels, tmp, 0, tmp.length);
+            moddedPixels = tmp;
+        }
+        // moddedPixels: this is the actual data, that will be displayed as the array
+        // newPixels: this will be displayed as the converted image
         return { moddedPixels: moddedPixels, newPixels: newPixels };
 
     }

@@ -16,7 +16,15 @@ function handleFileSelected(e) {
     var singleFile = e.target.files[0];
     var url = URL.createObjectURL(singleFile);
     uploadedFile = singleFile;
-    variableName = uploadedFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z_][^a-zA-Z0-9_]*/, '_');
+    // figure out the variable name to use - remove the file extension, and replace any characters not allowed in a variable name
+    variableName = uploadedFile.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_]+/g, '_');
+    // variable names can't begin with a number
+    var rx = new RegExp(/^[0-9]*$/gm);
+    if (rx.test(variableName)) {
+        variableName = '_' + variableName;
+    }
+    // the above rules should create a variable name valid for most languages
+    
     init();
 
     imgImageHolder = null;
@@ -145,6 +153,7 @@ function prepareImage(image, newWidth, newHeight) {
 
     console.log('image size: ' + image.width + 'x' + image.height + ' => ' + newWidth + 'x' + newHeight);
     var paletteMod = $('#cbPaletteMod').val();
+    var forColumnRead = $('#cbForColumnRead').is(':checked');
     var bytePerPixel = Math.ceil(parseInt(paletteMod) / 8);
     console.log('paletteMod: ' + paletteMod + ' (' + bytePerPixel + 'bytes/pixel)');
 
@@ -174,7 +183,7 @@ function prepareImage(image, newWidth, newHeight) {
     //var isSingleArray = $('[type="radio"][name="cbArrayType"]:checked').val() == 'SINGLE';
 
     // do image convert
-    var convertResult = imageConverter.convert(imageWidth, imageHeight, bytePerPixel, paletteMod, origPixels);
+    var convertResult = imageConverter.convert(imageWidth, imageHeight, bytePerPixel, paletteMod, origPixels, forColumnRead);
     var moddedPixels = convertResult.moddedPixels;
     var newPixels = convertResult.newPixels;
 
@@ -195,8 +204,7 @@ function convertToString(data, colNum, isImage, imageHeight, imageWidth) {
     var resultString = '';
     var conversionType = $('#selFormat').val();
     var paletteMod = $('#cbPaletteMod').val();
-    var dataLength = (paletteMod == '1') ? Math.ceil(data.byteLength / 8) : data.byteLength;
-    console.log('data.byteLength: ' + data.byteLength);
+    var dataLength = data.byteLength;
     console.log('dataLength: ' + dataLength);
     var colNumber = (paletteMod == '1') ? Math.ceil(colNum / 8) : colNum;
     console.log('colNum: ' + colNum);
@@ -299,6 +307,15 @@ $('document').ready(function () {
         })
         //$('#divForceBinary').prop('disabled', false);
     });
+    $('#cbPaletteMod').on('change', function (e) {
+        var disabled = $('#cbPaletteMod').val() != '1';
+        $('.image1BitModeOnly').each(function () {
+            $(this).prop('disabled', disabled);
+        })
+    });
+    $('.image1BitModeOnly').each(function () {
+        $(this).prop('disabled', true);
+    })
     $('#btnConvert').on('click', convert);
     $('#btnCopyToClipboard').on('click', copyToClipboard);
     $('#btnSaveImage').on('click', saveImage);
