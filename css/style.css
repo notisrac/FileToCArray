@@ -1,5 +1,5 @@
 label {
-    width: 170px;
+    width: 190px;
     margin: 1px;
     display: inline-block;
     vertical-align: top;
@@ -92,10 +92,51 @@ img {
     color: #696969;
 }
 
-.info-icon {
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
     width: 16px;
     height: 16px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAPUExURQAAAAAAAAAAAAAAAAAAAE8O540AAAAFdFJOUwAyIhcHOGe1IAAAAFdJREFUGNNlj1ECwCAIQgW5/5lHaas1vvSpqBGWkgRT0UqAFpCVu6gVVD13q0MVBqpHptog3ELGIWdrAu3bIDYgPoC3KXstymSs/R32XnwE93Pz/cGm+wN52wDgRMjGVQAAAABJRU5ErkJggg==);
+    top: 2px;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    min-width: 300px;
+    max-width: 600px;
+    background-color: #EEE;
+    color: #000;
+    border: 1px solid #696969;
+    text-align: left;
+    padding: 5px;
+    border-radius: 6px;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 150%; 
+
+    font-size: 12px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 13px;
+    right: 100%; 
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
 }
 
 .image1BitModeOnly {

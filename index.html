@@ -35,7 +35,11 @@
         Select a file: <input type="file" id="inFileInput" value="" />
     </p>
     <fieldset>
-        <legend>File info</legend>
+        <legend>File info 
+            <div class="tooltip">
+                <span class="tooltiptext">This section contains basic information on the uploaded file.<br/>If it is an image, the size in pixel and a preview will be shown</span>
+            </div>
+        </legend>
         <div>
             <label for="fiName">Name</label>
             <span id="fiName"></span>
@@ -53,14 +57,28 @@
             <span id="fiLastModifiedDate"></span>
         </div>
         <div id="divPreview" class="fileIsImage">
-            <label for="imgPreview">Preview</label>
+            <label for="imgPreview">Preview
+                <div class="tooltip">
+                    <span class="tooltiptext">The grey border around the image is for visibility only.<br/>If it is shorter than 32px, or larger than 100x100px, it will be resized. Again, for visibility reasons.</span>
+                </div>
+            </label>
             <!-- preview image goes here -->
         </div>
     </fieldset>
     <fieldset id="fsConversionOptions">
         <legend>Conversion settings</legend>
         <div>
-            <label for="selFormat">Code format</label>
+            <label for="selFormat">Code format
+                <div class="tooltip">
+                    <span class="tooltiptext">The array declaration will contain bytes in this format.<br/>So if you have choosen "Hex (0x00)", it will give you this output:
+<pre>
+static const unsigned char awesomeimage[] = {
+  0x00, 0xff, 0xff
+};
+</pre>                        
+                    </span>
+                </div>
+            </label>
             <select id="selFormat">
                 <option value="HEX0" selected>Hex (0x00)</option>
                 <option value="HEX_SLASH">Hex (\x00)</option>
@@ -69,12 +87,20 @@
             </select>
         </div>
         <div class="fileIsImage">
-            <label for="cbForceBinary">Treat as binary</label>
+            <label for="cbForceBinary">Treat as binary
+                <div class="tooltip">
+                    <span class="tooltiptext">This tells the converter to treat the current file as a binary, eventhough it is an image.<br/>Every image conversion option will be disabled.</span>
+                </div>
+            </label>
             <input type="checkbox" id="cbForceBinary" />
         </div>
         <hr class="fileIsImage"/>
         <div class="fileIsImage">
-            <label id="lblPaletteMod" for="cbPaletteMod">Palette mod</label>
+            <label id="lblPaletteMod" for="cbPaletteMod">Palette mod
+                <div class="tooltip">
+                    <span class="tooltiptext">This controls the output palette format of the image<br/>For more info on this, please see <a href="https://en.wikipedia.org/wiki/Color_depth" target="_blank">the WikiPedia aricle on color depth</a></span>
+                </div>
+            </label>
             <select id="cbPaletteMod" class="imageConversionOption">
                 <option value="32">32 bit RGBA (4bytes/pixel)</option>
                 <option value="24" selected>24bit RGB (3bytes/pixel)</option>
@@ -86,15 +112,27 @@
             </select>
         </div>
         <div class="fileIsImage">
-            <label for="txtResizeX">Resize</label>
+            <label for="txtResizeX">Resize
+                <div class="tooltip">
+                    <span class="tooltiptext">Fill only one of the size boxes to resize the image maintaining the original spect ratio.<br/>Keep both empty, if you do not want to change the size.</span>
+                </div>
+            </label>
             <input type="text" id="txtResizeX" class="imageConversionOption shortInput" />&nbsp;x&nbsp;<input type="text" id="txtResizeY" class="imageConversionOption shortInput" />&nbsp;(Fill only one to maintain aspect ratio)
         </div>
         <div class="fileIsImage">
-            <label for="cbMultiLine" class="imageConversionOption">Multi line</label>
+            <label for="cbMultiLine" class="imageConversionOption">Multi line
+                <div class="tooltip">
+                    <span class="tooltiptext">The bytes in the array will be split into multiple lines, roughly matching the aspect ratio of the image.<br/>Unselect this to have all the bytes in a single row.</span>
+                </div>
+            </label>
             <input type="checkbox" id="cbMultiLine" class="imageConversionOption" checked />
         </div>
         <div class="fileIsImage image1BitModeOnly">
-            <label for="cbForColumnRead" class="imageConversionOption image1BitModeOnly">Optimise for column read</label>
+            <label for="cbForColumnRead" class="imageConversionOption image1BitModeOnly">Optimize for column read
+                <div class="tooltip">
+                    <span class="tooltiptext">For applications where you need to display the image one 8bit column at a time - as opposed to the normal mode where you plot the image by row.<br/><b>Row read optimized:</b><img alt="" src="Images/RowReadOptimized_small.png"/><br/><b>Column read optimized:</b><img alt="" src="Images/ColumnReadOptimized_small.png"/><br/>This is only available in 1bit mode!</span>
+                </div> 
+            </label>
             <input type="checkbox" id="cbForColumnRead" class="imageConversionOption image1BitModeOnly" />
         </div>
         <!--<div class="fileIsImage">
@@ -137,6 +175,9 @@
             <input type="checkbox" id="cbPROGMEM" value="PROGMEM" checked />
         </div>
         <div>
+            <div class="tooltip">
+                <span class="tooltiptext">These control the signature generated.<br/>Please note, not all of them make sense in all languages!</span>
+            </div> 
             <span id="spnSignaturePreview" class="signaturePreview">...</span>
         </div>
     </fieldset>
