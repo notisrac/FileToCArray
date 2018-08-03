@@ -105,7 +105,7 @@ var imageConverter = {
         arrayUtils.subArray(source, pixelData, position, position + 4);
         // modify the current pixel
         var moddedPixelData = this.convertFromPixel(pixelData, paletteMod);
-        
+
         return moddedPixelData;
     },
 
@@ -113,7 +113,7 @@ var imageConverter = {
         // the downsampled pixels
         var moddedPixels = new Uint8Array(imageWidth * imageHeight * bytePerPixel); // typed arrays are way faster, than the genric Array
         // the actual length of the modded pixels array
-        var moddedPixelsActualLength = (paletteMod == '1')? 0 : moddedPixels.length;
+        var moddedPixelsActualLength = (paletteMod == '1') ? 0 : moddedPixels.length;
         // the downsampled pixels converted back to 24bit for displaying
         var newPixels = new Uint8ClampedArray(imageWidth * imageHeight * 4);
         // loop through all the pixels, and modify them one by one
@@ -139,39 +139,44 @@ var imageConverter = {
             }
         } else {
             var byteCount = 0;
-            for (let x = 0; x < imageWidth; x++) {
-                var outValue = 0;
-                for (let y = 0; y < imageHeight; y++) {
-                    var pixelPos = (y * imageWidth * 4) + (x * 4);
-                    // modify the current pixel
-                    var moddedPixelData = this.getConvertedPixel(origPixels, pixelPos, paletteMod);
-                    var pixelValue = moddedPixelData.convertedPixel[0];
-                    // console.log('pixelPos:' + pixelPos + ' outValue:' + this.getBits(outValue) + ' pixelValue:' + JSON.stringify(pixelValue));
-
-                    // switch to a new byte
-                    if (0 == (y % 8) && 0 != y) {
-                        arrayUtils.concatArray([outValue], moddedPixels, byteCount);
-                        // console.log(byteCount + ': ' + this.getBits(outValue));
-                        // console.log(byteCount + ': ' + JSON.stringify(moddedPixels));
-                        byteCount++;
-                        outValue = 0;
-                    }
-
-                    // add the pixels to the byte
-                    var mask = 1 << (y % 8);
-                    if (0 < pixelValue) {
-                        outValue |= mask;
-                    }
-                    else {
-                        outValue &= ~mask;
-                    }
-                    // console.log('x:' + x + ' y:' + y + ' pixelValue:' + pixelValue + ' outValue:' + this.getBits(outValue));
+            var yPos = 0;
+            do {
+                var yStop = 8;
+                if (yPos + 8 > imageHeight) {
+                    yStop = imageHeight - yPos;
                 }
-                arrayUtils.concatArray([outValue], moddedPixels, byteCount);
-                // console.log(byteCount + ': ' + this.getBits(outValue));
-                // console.log(byteCount + ': ' + JSON.stringify(moddedPixels));
-                byteCount++;
-            }
+                for (let x = 0; x < imageWidth; x++) {
+                    var outValue = 0;
+                    for (let y = 0; y < yStop; y++) {
+                        var pixelPos = ((yPos + y) * imageWidth * 4) + (x * 4);
+                        console.log(x + ',' + y + '(' + yPos + '): ' + pixelPos);
+
+                        // modify the current pixel
+                        var moddedPixelData = this.getConvertedPixel(origPixels, pixelPos, paletteMod);
+                        // store the new pixel
+                        arrayUtils.concatArray(moddedPixelData.newPixel, newPixels, pixelPos);
+                        var pixelValue = moddedPixelData.convertedPixel[0];
+                        // console.log('pixelPos:' + pixelPos + ' outValue:' + this.getBits(outValue) + ' pixelValue:' + JSON.stringify(pixelValue));
+
+                        // add the pixels to the byte
+                        var mask = 1 << (y % 8);
+                        if (0 < pixelValue) {
+                            outValue |= mask;
+                        }
+                        else {
+                            outValue &= ~mask;
+                        }
+                        // console.log('x:' + x + ' y:' + y + ' pixelValue:' + pixelValue + ' outValue:' + this.getBits(outValue));
+                    }
+                    // switch to a new byte
+                    arrayUtils.concatArray([outValue], moddedPixels, byteCount);
+                    // console.log(byteCount + ': ' + this.getBits(outValue));
+                    // console.log(byteCount + ': ' + JSON.stringify(moddedPixels));
+                    byteCount++;
+                }
+                yPos += yStop;
+            } while (yPos < imageHeight);
+
             moddedPixelsActualLength = byteCount;
         }
 
