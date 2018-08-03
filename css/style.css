@@ -22,7 +22,6 @@ img {
 #imgPreview {
     display: inline-block;
     max-height: 100px;
-    max-width: 100px;
     min-height: 32px;
     border: 1px solid #696969;
 }
