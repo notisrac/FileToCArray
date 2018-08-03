@@ -149,7 +149,7 @@ var imageConverter = {
                     var outValue = 0;
                     for (let y = 0; y < yStop; y++) {
                         var pixelPos = ((yPos + y) * imageWidth * 4) + (x * 4);
-                        console.log(x + ',' + y + '(' + yPos + '): ' + pixelPos);
+                        //console.log(x + ',' + y + '(' + yPos + '): ' + pixelPos);
 
                         // modify the current pixel
                         var moddedPixelData = this.getConvertedPixel(origPixels, pixelPos, paletteMod);
