@@ -204,8 +204,22 @@ function convertToString(data, colNum, isImage, imageHeight, imageWidth) {
     var resultString = '';
     var conversionType = $('#selFormat').val();
     var paletteMod = $('#cbPaletteMod').val();
+    var separateBytes = $('#cbSeparateBytes').is(':checked');
     var dataLength = data.byteLength;
     console.log('dataLength: ' + dataLength);
+    var bytesPerPixel = 1;
+    if (isImage) {
+        bytesPerPixel = (dataLength / (imageWidth * imageHeight));
+    }
+    if (separateBytes) {
+        bytesPerPixel = 1;
+    }
+    if (bytesPerPixel < 1) {
+        bytesPerPixel = 1;
+    }
+    console.log('bytesPerPixel: ' + bytesPerPixel);
+    var actualDataLength = dataLength / bytesPerPixel;
+    console.log('actualDataLength: ' + actualDataLength);
     var colNumber = (paletteMod == '1') ? Math.ceil(colNum / 8) : colNum;
     console.log('colNum: ' + colNum);
     console.log('colNumber: ' + colNumber);
@@ -220,7 +234,7 @@ function convertToString(data, colNum, isImage, imageHeight, imageWidth) {
 
     resultString += '// array size is ' + dataLength + '\r\n';
     resultString += assebleSignature() + ' = {\r\n  ';
-    resultString += stringConverter.convert(dataLength, conversionType, multiLine, colNumber, data);
+    resultString += stringConverter.convert(actualDataLength, bytesPerPixel, conversionType, multiLine, colNumber, data);
     resultString += '\r\n};';
 
     return resultString;

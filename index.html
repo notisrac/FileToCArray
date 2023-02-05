@@ -89,7 +89,7 @@ static const unsigned char awesomeimage[] = {
         <div class="fileIsImage">
             <label for="cbForceBinary">Treat as binary
                 <div class="tooltip">
-                    <span class="tooltiptext">This tells the converter to treat the current file as a binary, eventhough it is an image.<br/>Every image conversion option will be disabled.</span>
+                    <span class="tooltiptext">This tells the converter to treat the current file as a binary, eventhough it is an image.<br/>Every image conversion option will be disabled.<br/>Also will exclude the widht and height info from the output.</span>
                 </div>
             </label>
             <input type="checkbox" id="cbForceBinary" />
@@ -135,6 +135,14 @@ static const unsigned char awesomeimage[] = {
             </label>
             <input type="checkbox" id="cbForColumnRead" class="imageConversionOption image1BitModeOnly" />
         </div>
+        <div class="fileIsImage">
+            <label for="cbSeparateBytes" class="imageConversionOption">Separate bytes of pixels
+                <div class="tooltip">
+                    <span class="tooltiptext">If ticked every byte of every pixel will be added to the array separately. Otherwise one item in the array will represent all bytes of one pixel.</span>
+                </div> 
+            </label>
+            <input type="checkbox" id="cbSeparateBytes" class="imageConversionOption"/>
+        </div>
         <!--<div class="fileIsImage">
             <label for="cbArrayType">Array type</label>
             <input type="radio" name="cbArrayType" value="SINGLE" class="imageConversionOption" checked />Single
@@ -158,6 +166,7 @@ static const unsigned char awesomeimage[] = {
                 <option value="int">int</option>
                 <option value="unsigned int">unsigned int</option>
                 <option value="word">word</option>
+                <option value="short">short</option>
                 <option value="long">long</option>
                 <option value="unsigned long">unsigned long</option>
                 <option value="int8_t">int8_t</option>

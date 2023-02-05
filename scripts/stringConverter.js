@@ -1,18 +1,19 @@
 var stringConverter = {
-    convertByte: function (oneByte, conversionType) {
+    convertByte: function (oneByte, bytesPerPixel, conversionType) {
+        // console.log(oneByte);
         var stringByte = '???';
         switch (conversionType) {
             case 'HEX0':
-                stringByte = '0x' + ('00' + oneByte.toString(16)).slice(-2);
+                stringByte = '0x' + oneByte.toString(16).padStart(bytesPerPixel * 2, '0');
                 break;
             case 'HEX_SLASH':
-                stringByte = '\\x' + ('00' + oneByte.toString(16)).slice(-2);
+                stringByte = '\\x' + oneByte.toString(16).padStart(bytesPerPixel * 2, '0');
                 break;
             case 'DEC':
                 stringByte = oneByte;
                 break;
             case 'BIN':
-                stringByte = 'B' + ('00000000' + (oneByte >>> 0).toString(2)).slice(-8)
+                stringByte = 'B' + oneByte.toString(2).padStart(bytesPerPixel * 8, '0');
                 break;
             default:
         }
@@ -20,22 +21,20 @@ var stringConverter = {
         return stringByte;
     },
 
-    convert: function (dataLength, conversionType, multiLine, colNumber, data) {
+    convert: function (dataLength, bytesPerPixel, conversionType, multiLine, colNumber, data) {
         var resultString = '';
         for (var i = 0; i < dataLength; i++) {
             var stringByte = '';
-            //if (isArray(data[i])) {
-            //    for (var j = 0; j < data[i].length; j++) {
-            //        stringByte += convertByte(data[i][j], conversionType) + ', ';
-            //    }
-            //    if (multiLine) {
-            //        stringByte += '\r\n';
-            //    }
-            //}
-            //else {
-            //    stringByte = convertByte(data[i], conversionType) + ', ';
-            //}
-            stringByte = this.convertByte(data[i], conversionType) + ', ';
+            // need to use bigint, so we can use 32bit integers (4byte per pixel)
+            let combinedByte = BigInt("0b00000000000000000000000000000000");
+            for (let j = 0; j < bytesPerPixel; j++) {
+                let pixelByte = BigInt(data[(i * bytesPerPixel) + j]);
+                if (j != 0) {
+                    combinedByte = combinedByte << BigInt(8);
+                }
+                combinedByte = combinedByte | pixelByte;
+            }
+            stringByte = this.convertByte(combinedByte, bytesPerPixel, conversionType) + ', ';
             if (multiLine && ((i + 1) % colNumber == 0)) {
                 stringByte += '\r\n  ';
             }
