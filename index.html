@@ -144,6 +144,13 @@ static const unsigned char awesomeimage[] = {
             </label>
             <input type="checkbox" id="cbSeparateBytes" class="imageConversionOption"/>
         </div>
+        <div class="fileIsImage">
+            <label id="lblEndianness" for="selEndianness" class="imageConversionOption">Endianness</label>
+            <select id="selEndianness" class="imageConversionOption">
+                <option value="le">Little-endian</option>
+                <option value="be">Big-endian</option>
+            </select>
+        </div>
         <!--<div class="fileIsImage">
             <label for="cbArrayType">Array type</label>
             <input type="radio" name="cbArrayType" value="SINGLE" class="imageConversionOption" checked />Single

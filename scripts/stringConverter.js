@@ -1,27 +1,26 @@
 var stringConverter = {
-    convertByte: function (oneByte, bytesPerPixel, conversionType) {
+    convertByte: function (oneByte, bytesPerPixel, conversionType, endianness) {
         // console.log(oneByte);
         var stringByte = '???';
-        switch (conversionType) {
-            case 'HEX0':
-                stringByte = '0x' + oneByte.toString(16).padStart(bytesPerPixel * 2, '0');
-                break;
-            case 'HEX_SLASH':
-                stringByte = '\\x' + oneByte.toString(16).padStart(bytesPerPixel * 2, '0');
-                break;
-            case 'DEC':
-                stringByte = oneByte;
-                break;
-            case 'BIN':
-                stringByte = 'B' + oneByte.toString(2).padStart(bytesPerPixel * 8, '0');
-                break;
-            default:
+
+        if (conversionType == 'HEX0' || conversionType == 'HEX_SLASH') {
+            stringByte = oneByte.toString(16).padStart(bytesPerPixel * 2, '0');
+            if (endianness == 'be') {
+                stringByte = this.changeEndianness(stringByte);
+            }
+            stringByte = ((conversionType == 'HEX0') ? '0x' : '\\x') + stringByte;
+        } else if (conversionType == 'DEC') {
+            stringByte = oneByte;
+        } else if (conversionType == 'BIN') {
+            stringByte = 'B' + oneByte.toString(2).padStart(bytesPerPixel * 8, '0');
+        } else {
+            console.error('Unknown conversion type');
         }
 
         return stringByte;
     },
 
-    convert: function (dataLength, bytesPerPixel, conversionType, multiLine, colNumber, data) {
+    convert: function (dataLength, bytesPerPixel, conversionType, multiLine, endianness, colNumber, data) {
         var resultString = '';
         for (var i = 0; i < dataLength; i++) {
             var stringByte = '';
@@ -34,7 +33,7 @@ var stringConverter = {
                 }
                 combinedByte = combinedByte | pixelByte;
             }
-            stringByte = this.convertByte(combinedByte, bytesPerPixel, conversionType) + ', ';
+            stringByte = this.convertByte(combinedByte, bytesPerPixel, conversionType, endianness) + ', ';
             if (multiLine && ((i + 1) % colNumber == 0)) {
                 stringByte += '\r\n  ';
             }
@@ -47,6 +46,16 @@ var stringConverter = {
         // resultString = '// array size is ' + dataLength + '\r\nconst uint8_t data[] = {\r\n  ' + resultString + '\r\n};';
 
         return resultString;
+    },
+
+    changeEndianness: function (val) {
+        const result = [];
+        let len = val.length - 2;
+        while (len >= 0) {
+          result.push(val.substr(len, 2));
+          len -= 2;
+        }
+        return result.join('');
     }
 
 }
