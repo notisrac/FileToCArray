@@ -300,6 +300,9 @@ function assebleSignature() {
     if ($('#cbConst').is(':checked')) {
         sig += $('#cbConst').val() + ' ';
     }
+    if ($('#cbUnsigned').is(':checked')) {
+        sig += $('#cbUnsigned').val() + ' ';
+    }
     sig += $('#selDataType').val() + ' ' + variableName + '[] ';
     if ($('#cbPROGMEM').is(':checked')) {
         sig += $('#cbPROGMEM').val() + ' ';
