@@ -20,6 +20,10 @@ var imageConverter = {
                 retData = [r, g, b, a];
                 newPixelData = [r, g, b, a];
                 break;
+            case '32r':
+                retData = [b, g, r, a];
+                newPixelData = [r, g, b, a];
+                break;
             case '24':
                 retData = [r, g, b];
                 newPixelData = [r, g, b, 255];
